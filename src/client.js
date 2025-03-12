@@ -12,6 +12,7 @@ class LamaticClient {
     this.baseUrl = "https://api.lamatic.ai";
   }
 
+  // Call APIs
   async request(endpoint, method = "GET", data = null) {
     try {
       const options = {
@@ -37,6 +38,16 @@ class LamaticClient {
     } catch (error) {
       handleError(error);
     }
+  }
+
+  // 1️⃣ Call a flow execution
+  async callFlow(flowId, inputData) {
+    return await this.request(`flows/${flowId}/execute`, "POST", inputData);
+  }
+
+  // 2️⃣ Get available models
+  async getModels() {
+    return await this.request("models");
   }
 }
 
