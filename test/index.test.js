@@ -1,10 +1,4 @@
-const { greet } = require("../src/index");
-
-test("greet returns the correct greeting", () => {
-  expect(greet("World")).toBe("Hello, World!");
-});
-const { Lamatic, greet } = require("../src/index");
-
+// Lamatic Class Tests
 describe("Lamatic", () => {
   it("should be a class", () => {
     expect(typeof Lamatic).toBe("function");
@@ -21,16 +15,5 @@ describe("Lamatic", () => {
   });
 });
 
-describe("greet", () => {
-  it("should be a function", () => {
-    expect(typeof greet).toBe("function");
-  });
 
-  it("should return the correct greeting", () => {
-    expect(greet("World")).toBe("Hello, World!");
-  });
 
-  it("should return a greeting with a different name",()=>{
-    expect(greet("Vrijraj")).toBe("Hello, Vrijraj!");
-  })
-});

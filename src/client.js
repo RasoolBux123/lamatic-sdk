@@ -1,4 +1,4 @@
-// const fetch = require("node-fetch");
+const fetch = require("node-fetch");
 const Auth = require("./auth");
 const { handleError } = require("./utils");
 
