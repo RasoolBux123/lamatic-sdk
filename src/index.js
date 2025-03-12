@@ -18,11 +18,20 @@ class Lamatic {
     return await this.client.request("users/me");
   }
 
+  // Call a flow
+  async callFlow(flowId, inputData) {
+    return await this.client.callFlow(flowId, inputData);
+  }
+
+  // Get available models
+  async getModels() {
+    return await this.client.getModels();
+  }
+
   init() {
     console.log("Lamatic SDK initialized");
   }
 }
-
 
 module.exports = {
   Lamatic,
