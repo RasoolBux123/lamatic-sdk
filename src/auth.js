@@ -12,11 +12,14 @@ class Auth {
     /**
      * @returns {object} - The headers for API requests.
      */
-    getHeaders() {
-      return {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
+    getHeaders(projectID) {
+      const headers = {
+        "Content-Type" : "application/json",
+        "Authorization": `Bearer ${this.apiKey}`,
+        "x-project-id": projectID
       };
+
+      return headers;
     }
   }
   

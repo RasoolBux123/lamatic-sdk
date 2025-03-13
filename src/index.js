@@ -1,9 +1,16 @@
 const LamaticClient = require("./client");
 
 class Lamatic {
-  constructor(apiKey) {
+  /**
+   * Constructor to initialize the Lamatic SDK with an API key
+   * @param {string} endpoint - The endpoint URL for the Lamatic API.
+   * @param {string} apiKey - The API key for the Lamatic API.
+   */
+
+  constructor(endpoint,apiKey) {
+    this.endpoint = endpoint;
     this.name = "Lamatic SDK";
-    this.client = new LamaticClient(apiKey);
+    this.client = new LamaticClient(apiKey,endpoint);
   }
 
   /**
@@ -28,11 +35,13 @@ class Lamatic {
     return await this.client.getModels();
   }
 
+  async executeFlow(projectId, flowID, payload) {
+    return await this.client.executeFlow(projectId,flowID, payload);
+  }
+
   init() {
     console.log("Lamatic SDK initialized");
   }
 }
 
-module.exports = {
-  Lamatic,
-};
+module.exports = Lamatic;
