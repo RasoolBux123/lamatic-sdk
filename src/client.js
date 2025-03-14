@@ -3,14 +3,14 @@ const { handleError } = require("./utils");
 
 class LamaticClient {
   // Constructor to initialize the LamaticClient with an API key
-  constructor(apiKey,endpoint) {
+  constructor(apiKey, endpoint) {
     // Check if the API key is provided
     if (!apiKey) throw new Error("API key is required");
     this.apiKey = apiKey;
 
     // Endpoint URL for the Lamatic API
     if (!endpoint) throw new Error("Endpoint URL is required");
-    this.endpoint = endpoint
+    this.endpoint = endpoint;
 
     this.auth = new Auth(apiKey);
   }
@@ -43,35 +43,45 @@ class LamaticClient {
     }
   }
 
-  // Flow Request
-  async executeFlowRequest(method = "POST", projectId, data = null) {
+  // Flow Request with GraphQL
+  async executeFlowRequest(projectId, flowId, payload) {
     try {
-
+      // Format the payload correctly for GraphQL
+      // Note: This properly stringifies the payload object for the GraphQL query
       const graphqlQuery = {
-        query: `query ExecuteWorkflow {
-          executeWorkflow(
-            workflowId: "${data.flowID}",
-            payload: ${JSON.stringify(data.payload)}
-          ) {
-            status
-            result
-          }
-        }`
+        query: `query ExecuteWorkflow(
+                $workflowId: String!  
+                $topic: String
+              ) 
+              {   
+                executeWorkflow( 
+                  workflowId: $workflowId   
+                  payload: 
+                  {     topic: $topic    }   
+                ) 
+                {  
+                  status       
+                  result   
+                } 
+              }`,
+        variables: {
+          workflowId: flowId,
+          payload,
+        },
       };
 
       const options = {
-        method,
-        headers: this.auth.getHeaders(projectId),
-        body: JSON.stringify(graphqlQuery)
+        method: "POST",
+        headers: await this.auth.getHeaders(projectId),
+        body: JSON.stringify(graphqlQuery),
       };
+      
+      const response = await fetch(this.endpoint, options);
 
-      const response = await fetch(`${this.endpoint}`, options);
-      console.log(`Status: ${response.status} ${response.statusText}`);
-  
       // Get the response content regardless of status
       const responseText = await response.text();
       console.log(`Response body: ${responseText}`);
-      
+
       // Then try to parse it as JSON if it's valid
       let responseData;
       try {
@@ -79,39 +89,26 @@ class LamaticClient {
       } catch (e) {
         // Not JSON, leave as text
       }
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText} - ${responseText}`);
-      }
-      
-      return responseData || responseText;
 
+      if (!response.ok) {
+        throw new Error(
+          `API Error: ${response.status} ${response.statusText} - ${responseText}`
+        );
+      }
+
+      return responseData || responseText;
     } catch (error) {
       handleError(error);
     }
   }
 
-  // 1️⃣ Call a flow execution
-  async callFlow(flowId, inputData) {
-    return await this.request(`flows/${flowId}/execute`, "POST", inputData);
-  }
-
-  // 2️⃣ Get available models
-  async getModels() {
-    return await this.request("models");
-  }
-
-  async executeFlow(projectId,flowID,payload){
+  // Execute a flow with the GraphQL API
+  async executeFlow(projectId, flowId, payload) {
     if (!projectId) throw new Error("The Project ID is required");
-    if (!flowID) throw new Error("The Flow ID is required");
+    if (!flowId) throw new Error("The Flow ID is required");
     if (!payload) throw new Error("The payload is required");
 
-    const data = {
-      flowID,
-      payload
-    }
-
-    return await this.executeFlowRequest("POST", projectId, data);
+    return await this.executeFlowRequest(projectId, flowId, payload);
   }
 }
 

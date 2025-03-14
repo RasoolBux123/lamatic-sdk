@@ -7,10 +7,10 @@ class Lamatic {
    * @param {string} apiKey - The API key for the Lamatic API.
    */
 
-  constructor(endpoint,apiKey) {
+  constructor(endpoint, apiKey) {
     this.endpoint = endpoint;
     this.name = "Lamatic SDK";
-    this.client = new LamaticClient(apiKey,endpoint);
+    this.client = new LamaticClient(apiKey, endpoint);
   }
 
   /**
@@ -20,23 +20,9 @@ class Lamatic {
   getName() {
     return this.name;
   }
-  // Fetches the current user's data
-  async getUserData() {
-    return await this.client.request("users/me");
-  }
-
-  // Call a flow
-  async callFlow(flowId, inputData) {
-    return await this.client.callFlow(flowId, inputData);
-  }
-
-  // Get available models
-  async getModels() {
-    return await this.client.getModels();
-  }
 
   async executeFlow(projectId, flowID, payload) {
-    return await this.client.executeFlow(projectId,flowID, payload);
+    return await this.client.executeFlow(projectId, flowID, payload);
   }
 
   init() {

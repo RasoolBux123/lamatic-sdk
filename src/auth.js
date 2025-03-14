@@ -16,7 +16,7 @@ class Auth {
       const headers = {
         "Content-Type" : "application/json",
         "Authorization": `Bearer ${this.apiKey}`,
-        "x-project-id": projectID
+        "x-project-id": `${projectID}`
       };
 
       return headers;
