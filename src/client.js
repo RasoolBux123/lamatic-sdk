@@ -50,7 +50,7 @@ class LamaticClient {
       const graphqlQuery = {
         query: `query ExecuteWorkflow(
                 $workflowId: String!  
-                $payload: String!
+                $payload: JSON!
               ) 
               {   
                 executeWorkflow( 
@@ -75,9 +75,7 @@ class LamaticClient {
       };
       
       const response = await fetch(this.endpoint, options);
-
       const responseText = await response.text();
-      // console.log(`Response body: ${responseText}`);
 
       let responseData = JSON.parse(responseText);
     
@@ -100,9 +98,7 @@ class LamaticClient {
     if (!flowId) throw new Error("The Flow ID is required");
     if (!data) throw new Error("The payload is required");
 
-    let payload = JSON.stringify(data);
-
-    return await this.executeFlowRequest(projectId, flowId, payload);
+    return await this.executeFlowRequest(projectId, flowId, data);
   }
 }
 
