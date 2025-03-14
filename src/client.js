@@ -77,7 +77,7 @@ class LamaticClient {
       const response = await fetch(this.endpoint, options);
 
       const responseText = await response.text();
-      console.log(`Response body: ${responseText}`);
+      // console.log(`Response body: ${responseText}`);
 
       let responseData = JSON.parse(responseText);
     
