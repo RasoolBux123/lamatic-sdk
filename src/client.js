@@ -46,18 +46,16 @@ class LamaticClient {
   // Flow Request with GraphQL
   async executeFlowRequest(projectId, flowId, payload) {
     try {
-      // Format the payload correctly for GraphQL
-      // Note: This properly stringifies the payload object for the GraphQL query
+
       const graphqlQuery = {
         query: `query ExecuteWorkflow(
                 $workflowId: String!  
-                $topic: String
+                $payload: String!
               ) 
               {   
                 executeWorkflow( 
                   workflowId: $workflowId   
-                  payload: 
-                  {     topic: $topic    }   
+                  payload: $payload
                 ) 
                 {  
                   status       
@@ -66,7 +64,7 @@ class LamaticClient {
               }`,
         variables: {
           workflowId: flowId,
-          payload,
+          payload : payload,
         },
       };
 
@@ -78,35 +76,32 @@ class LamaticClient {
       
       const response = await fetch(this.endpoint, options);
 
-      // Get the response content regardless of status
+
       const responseText = await response.text();
       console.log(`Response body: ${responseText}`);
 
-      // Then try to parse it as JSON if it's valid
-      let responseData;
-      try {
-        responseData = JSON.parse(responseText);
-      } catch (e) {
-        // Not JSON, leave as text
-      }
-
+      let responseData = JSON.parse(responseText);
+    
       if (!response.ok) {
         throw new Error(
           `API Error: ${response.status} ${response.statusText} - ${responseText}`
         );
       }
 
-      return responseData || responseText;
+      return responseData;
+
     } catch (error) {
       handleError(error);
     }
   }
 
   // Execute a flow with the GraphQL API
-  async executeFlow(projectId, flowId, payload) {
+  async executeFlow(projectId, flowId, data) {
     if (!projectId) throw new Error("The Project ID is required");
     if (!flowId) throw new Error("The Flow ID is required");
-    if (!payload) throw new Error("The payload is required");
+    if (!data) throw new Error("The payload is required");
+
+    let payload = JSON.stringify(data);
 
     return await this.executeFlowRequest(projectId, flowId, payload);
   }
