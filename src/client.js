@@ -80,7 +80,7 @@ class LamaticClient {
 
       // Get the response content regardless of status
       const responseText = await response.text();
-      console.log(`Response body: ${responseText}`);
+      // console.log(`Response body: ${responseText}`);
 
       // Then try to parse it as JSON if it's valid
       let responseData;

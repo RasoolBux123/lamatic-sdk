@@ -11,22 +11,31 @@ npm install lamatic-ai
 ## Usage
 Here's a basic example to get started:
 ```javascript
-const { Lamatic } = require("lamatic-ai");
+const Lamatic = require("lamatic-ai");
 
 // Initialize with API key
-const lamatic = new Lamatic("your-api-key-here");
+const lamatic = new Lamatic({
+  endpoint: "YOUR END POINT",
+  apiKey: "YOUR API KEY",
+});
 
-// Call a method (example: Fetch user data)
-async function fetchUserData() {
+// Execute Flow
+async function getResponse() {
   try {
-    const userData = await lamatic.getUserData();
-    console.log("User Data:", userData);
+    const resData = await lamatic.executeFlow(
+      "YOUR ProjectID",
+      "YOUR FlowId",
+      {
+        // Payload
+      }
+    );
+    console.log("Data:", resData);
   } catch (error) {
-    console.error("Error:", error.message);
+    console.error("Error:", error);
   }
 }
 
-fetchUserData();
+getResponse();
 ```
 
 # Support
