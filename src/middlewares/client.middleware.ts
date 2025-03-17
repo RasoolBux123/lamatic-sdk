@@ -1,9 +1,21 @@
-const Auth = require("./auth");
-const { handleError } = require("../utils/utils");
+import Auth from "./auth.middleware";
+import {handleError}  from "../utils/utils"
 
 class LamaticClient {
+  endpoint : string;
+  apiKey : string | null | undefined;
+  accessToken : string | null | undefined;
+  projectID : string | null | undefined;
+  auth : Auth | null | undefined;
+
   // Constructor to initialize the LamaticClient with an API key
-  constructor(apiKey = null, endpoint, projectID = null, accessToken = null) {
+  constructor(
+    apiKey : string | null | undefined, 
+    endpoint : string | null | undefined, 
+    projectID : string | null | undefined, 
+    accessToken : string | null | undefined
+  ) {
+
     // API Key or Access Token Initialization
     if (!apiKey && !accessToken) throw new Error("API key or Access Token is required for the Lamatic Client");
     if(apiKey && accessToken) throw new Error("API key and Access Token cannot be used together, use either");
@@ -30,44 +42,16 @@ class LamaticClient {
 
     // Authorization Initialization
     if(this.apiKey){
-      this.auth = new Auth(this.apiKey, this.projectID, null);
+      this.auth = new Auth(this.apiKey ?? null, this.projectID ?? null, null);
     }
 
     if(this.accessToken){
-      this.auth = new Auth(null, null, this.accessToken);
-    }
-  }
-
-  // Call APIs
-  async request(method = "GET", data = null) {
-    try {
-      const options = {
-        method,
-        headers: this.auth.getHeaders(),
-        body: data ? JSON.stringify(data) : null,
-      };
-
-      /** Uncomment this section to make real api calls
-      const response = await fetch(`${this.endpoint}`, options);
-      if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-      return await response.json();
-      */
-
-      // Mock response for testing purposes
-      return {
-        success: true,
-        data: {
-          name: "Username",
-          email: "example@gmail.com",
-        },
-      };
-    } catch (error) {
-      handleError(error);
+      this.auth = new Auth(null, null, this.accessToken ?? null);
     }
   }
 
   // Flow Request with GraphQL
-  async executeFlowRequest(flowId, payload) {
+  async executeFlowRequest(flowId : string, payload : Object) {
     try {
 
       const graphqlQuery = {
@@ -93,7 +77,7 @@ class LamaticClient {
 
       const options = {
         method: "POST",
-        headers: await this.auth.getHeaders(),
+        headers: await this.auth?.getHeaders(),
         body: JSON.stringify(graphqlQuery),
       };
       
@@ -110,13 +94,13 @@ class LamaticClient {
 
       return responseData;
 
-    } catch (error) {
+    } catch (error : Error | any) {
       handleError(error);
     }
   }
 
   // Execute a flow with the GraphQL API
-  async executeFlow(flowId, data) {
+  async executeFlow(flowId : string, data : Object) {
     if (!flowId) throw new Error("The Flow ID is required");
     if (!data) throw new Error("The payload is required");
 
@@ -124,4 +108,4 @@ class LamaticClient {
   }
 }
 
-module.exports = LamaticClient;
+export default LamaticClient;
