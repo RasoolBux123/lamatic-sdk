@@ -28,9 +28,6 @@ class Auth {
     if (!projectID && !accessToken) {
       throw new Error("Project ID is required for the Lamatic API or use Access Token");
     }
-    if (projectID && accessToken) {
-      throw new Error("Project ID and Access Token cannot be used together, use either");
-    }
 
     if(projectID){
       this.projectID = projectID;
@@ -42,25 +39,12 @@ class Auth {
 
   verifyToken(token : string): JwtPayload {
     try {
-      const secret = process.env.SECRET;
-      if (!secret) {
-        throw new Error('Secret key not found');
-      }
-      const decoded = jwt.verify(token, secret) as JwtPayload;
+      const decoded = jwt.decode(token) as JwtPayload;
 
       return decoded;
     } catch (error : any) {
       if (error.name === 'TokenExpiredError') {
-        console.log('Access Token expired, regenerating...');
-        const secret = process.env.SECRET;
-        if (!secret) {
-          throw new Error('Secret key not found');
-        }
-        
-        const decodedExpired = jwt.decode(token) as JwtPayload;
-        const newToken = jwt.sign({ ...decodedExpired.projectID }, secret, {  algorithm: 'HS256',expiresIn: '1h' });
-
-        return this.verifyToken(newToken);
+        throw new Error('Access Token expired. Generate a new one using Lamatic Secret Key')
       } else {
         throw new Error('Invalid Access Token');
       }

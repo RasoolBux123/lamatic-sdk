@@ -12,8 +12,7 @@ class Lamatic {
    * Constructor to initialize the Lamatic SDK with configuration options
    * @param {Object} config - Configuration object
    * @param {string} [config.endpoint] - The endpoint URL for the Lamatic API
-   * @param {string} [config.apiKey] - The API key for the Lamatic API (or use config.api)
-   * @param {string} [config.api] - The API key for the Lamatic API (or use config.apiKey)
+   * @param {string} [config.apiKey] - The API key for the Lamatic API
    * @param {string} [config.projectID] - The project ID for the Lamatic API
    * @param {string} [config.accessToken] - The access token for the Lamatic API
    */
@@ -30,20 +29,16 @@ class Lamatic {
     }
     this.endpoint = config.endpoint;
 
-    if((config.apiKey || config.api) && config.accessToken) {
+    if((config.apiKey) && config.accessToken) {
       throw new Error('API key and Access Token cannot be used together, use either');
     }
 
-    if(!(config.apiKey || config.api) && !config.accessToken) {
+    if(!(config.apiKey) && !config.accessToken) {
       throw new Error('API key or Access Token is required');
     }
 
-    if(config.apiKey || config.api) {
-      this.apiKey = config.apiKey || config.api;
-    }
-
-    if(config.projectID && config.accessToken) {
-      throw new Error('Project ID and Access Token cannot be used together, use either');
+    if(config.apiKey) {
+      this.apiKey = config.apiKey;
     }
 
     if(!config.projectID && !config.accessToken) {
@@ -59,7 +54,7 @@ class Lamatic {
     }
 
     if(config.accessToken) {
-      this.client = new LamaticClient(null, this.endpoint, null, config.accessToken);
+      this.client = new LamaticClient(null, this.endpoint, this.projectID, config.accessToken);
     }
   }
 
