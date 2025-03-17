@@ -1,25 +1,21 @@
-import LamaticClient  from "./middlewares/client.middleware"
-import { config } from "./types/index.types";
+import { LamaticConfig, LamaticAPIResponse, LamaticResponse } from "./types";
 
 class Lamatic {
-  name : string;
-  endpoint : string | null | undefined;
-  apiKey? : string| null | undefined;
-  projectID? : string | null | undefined;
-  accessToken? : string | null | undefined;
-  client : LamaticClient | null | undefined;
+  name: string = "Lamatic SDK";
+  endpoint: string = "";
+  projectId: string = "";
+  apiKey?: string | null | undefined;
+  accessToken?: string | null | undefined;
   /**
    * Constructor to initialize the Lamatic SDK with configuration options
    * @param {Object} config - Configuration object
    * @param {string} [config.endpoint] - The endpoint URL for the Lamatic API
    * @param {string} [config.apiKey] - The API key for the Lamatic API
-   * @param {string} [config.projectID] - The project ID for the Lamatic API
+   * @param {string} [config.projectId] - The project ID for the Lamatic API
    * @param {string} [config.accessToken] - The access token for the Lamatic API
    */
 
-  constructor(config : config) {
-    this.name = "Lamatic SDK";
-
+  constructor(config : LamaticConfig) {
     if (!config) {
       throw new Error('Configuration object is required');
     }
@@ -27,53 +23,106 @@ class Lamatic {
     if(!config.endpoint) {
       throw new Error('Endpoint URL is required');
     }
-    this.endpoint = config.endpoint;
 
-    if((config.apiKey) && config.accessToken) {
-      throw new Error('API key and Access Token cannot be used together, use either');
+    if(!config.projectId) {
+      throw new Error('Project ID is required');
     }
 
     if(!(config.apiKey) && !config.accessToken) {
       throw new Error('API key or Access Token is required');
     }
+    this.endpoint = config.endpoint;
+    this.projectId = config.projectId;
+    this.apiKey = config.apiKey;
+    this.accessToken = config.accessToken;
+  }
 
-    if(config.apiKey) {
-      this.apiKey = config.apiKey;
-    }
 
-    if(!config.projectID && !config.accessToken) {
-      throw new Error('Project ID is required for the Lamatic API or use Access Token');
-    }
+  /**
+   * Execute a workflow with the given flow ID and payload
+   * @param {string} flowId - The ID of the workflow to execute
+   * @param {Object} payload - The payload to pass to the workflow
+   * @returns {Promise<LamaticResponse>} The response from the workflow
+   */
+  async executeFlow(flowId : string, payload : Object): Promise<LamaticResponse> {
+    try {
 
-    if(config.projectID) {
-      this.projectID = config.projectID;
-    }
+      const graphqlQuery = {
+        query: `query ExecuteWorkflow(
+                $workflowId: String!  
+                $payload: JSON!
+              ) 
+              {   
+                executeWorkflow( 
+                  workflowId: $workflowId   
+                  payload: $payload
+                ) 
+                {  
+                  status       
+                  result   
+                } 
+              }`,
+        variables: {
+          workflowId: flowId,
+          payload : payload,
+        },
+      };
 
-    if(config.apiKey) {
-      this.client = new LamaticClient(this.apiKey, this.endpoint, this.projectID, null);
-    }
+      const headers = this.getHeaders();
+      const options = {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(graphqlQuery),
+      };
+      
+      const response = await fetch(this.endpoint, options);
+      const responseText = await response.text();
+      let responseData : LamaticAPIResponse = JSON.parse(responseText);
+      if (responseData.errors) {
+        return {
+          status: "error",
+          result: null,
+          message: responseData.errors[0].message,
+          statusCode: response.status
+        }
+      }
+      return {
+        ...responseData.data.executeWorkflow,
+        statusCode: response.status
+      };
 
-    if(config.accessToken) {
-      this.client = new LamaticClient(null, this.endpoint, this.projectID, config.accessToken);
+    } catch (error : Error | any) {
+      console.error("[Lamatic SDK Error] : ", error.message);
+      throw new Error(error.message);
     }
   }
 
   /**
-   * Returns the name of the SDK.
-   * @returns {string} The name of the SDK.
+   * Get the headers for the API request
+   * @returns {Record<string, string>} The headers for the API request
    */
-
-  getName(): string {
-    return this.name;
+  getHeaders(): Record<string, string> {
+    if(this.accessToken){
+      return {
+        "Content-Type" : "application/json",
+        "X-Lamatic-Signature" : this.accessToken,
+        "x-project-id": this.projectId
+      }
+    }
+    return {
+      "Content-Type" : "application/json",
+      "Authorization": `Bearer ${this.apiKey}`,
+      "x-project-id": this.projectId
+    };  
   }
 
-  async executeFlow(flowID : string, payload : Object) {
-    return await this.client?.executeFlow(flowID, payload);
-  }
-
-  init() {
-    console.log("Lamatic SDK initialized");
+  /**
+   * Update the access token for the Lamatic SDK
+   * @param {string} accessToken - The new access token
+   */
+  updateAccessToken(accessToken : string) {
+    this.accessToken = accessToken;
   }
 }
 
-export default Lamatic;
+export { Lamatic };

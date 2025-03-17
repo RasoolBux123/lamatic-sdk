@@ -1,6 +1,6 @@
 {
   "name": "lamatic-ai",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -10,16 +10,12 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "jwt-decode": "^4.0.0",
-    "node-fetch": "^3.3.2"
-  },
+  "author": "Lamatic",
+  "license": "MIT",
+  "description": "Lamatic AI SDK for TypeScript to execute flow",
+  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.8.2",
-    "@types/jsonwebtoken": "^9.0.9"
-  }
+    "typescript": "^5.8.2"
+  },
+  "type": "module"
 }
