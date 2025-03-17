@@ -37,17 +37,16 @@ class Auth {
    * @returns {object} - The headers for API requests.
    */
 
-  verifyToken(token : string): JwtPayload {
+  decodeToken(token : string): JwtPayload {
     try {
       const decoded = jwt.decode(token) as JwtPayload;
+      if (decoded.exp && decoded.exp < Math.floor(Date.now() / 1000)) {
+        throw new Error('Access Token expired. Generate a new one using Lamatic Secret Key');
+      }
 
       return decoded;
     } catch (error : any) {
-      if (error.name === 'TokenExpiredError') {
-        throw new Error('Access Token expired. Generate a new one using Lamatic Secret Key')
-      } else {
-        throw new Error('Invalid Access Token');
-      }
+      throw new Error('Invalid Access Token');
     }
   }
 
@@ -63,7 +62,7 @@ class Auth {
     }
 
     if(this.accessToken){
-      const decodedToken = this.verifyToken(this.accessToken);
+      const decodedToken = this.decodeToken(this.accessToken);
       headers = {
         "Content-Type" : "application/json",
         "X-Lamatic-Signature" : this.accessToken,
