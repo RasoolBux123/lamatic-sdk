@@ -1,4 +1,4 @@
-import { Lamatic } from "lamatic-ai";
+import { Lamatic } from "@lamatic/lamatic-ts";
 
 const lamatic = new Lamatic({
   apiKey: "your-api-key",
