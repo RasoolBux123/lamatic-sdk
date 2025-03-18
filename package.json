@@ -1,5 +1,5 @@
 {
-  "name": "@lamatic/lamatic-ts",
+  "name": "lamatic-ts",
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

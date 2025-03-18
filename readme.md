@@ -7,7 +7,7 @@ The Lamatic SDK provides a simple way to interact with the Lamatic AI platform, 
 Install the Lamatic SDK using npm:
 
 ```bash
-npm install @lamatic/lamatic-ts
+npm install lamatic-ts
 ```
 
 ## Getting Started
@@ -20,7 +20,7 @@ To use the Lamatic SDK, you'll need:
 Initialize the SDK like this:
 
 ```typescript
-import { Lamatic } from "@lamatic/lamatic-ts";
+import { Lamatic } from "lamatic-ts";
 
 const lamatic = new Lamatic({
   apiKey: "your-api-key",
@@ -62,7 +62,7 @@ The main functionality of the SDK is to execute workflows (flows) that you've cr
 ### Basic Example
 
 ```typescript
-import { Lamatic } from "@lamatic/lamatic-ts";
+import { Lamatic } from "lamatic-ts";
 
 const lamatic = new Lamatic({
   apiKey: "your-api-key",
@@ -90,7 +90,7 @@ main();
 ### Using Access Token
 
 ```typescript
-import { Lamatic } from "@lamatic/lamatic-ts";
+import { Lamatic } from "lamatic-ts";
 
 const lamatic = new Lamatic({
   accessToken: "your-access-token",
@@ -116,7 +116,7 @@ main();
 This example shows how to handle an expired access token by fetching a new one and updating the SDK:
 
 ```typescript
-import { Lamatic } from "@lamatic/lamatic-ts";
+import { Lamatic } from "lamatic-ts";
 
 const lamatic = new Lamatic({
   accessToken: "your-access-token",
@@ -268,7 +268,7 @@ if (classificationResponse.status === "success" && classificationResponse.result
 The SDK is written in TypeScript and provides type definitions for all its functionality:
 
 ```typescript
-import { Lamatic, LamaticResponse, LamaticConfig } from "@lamatic/lamatic-ts";
+import { Lamatic, LamaticResponse, LamaticConfig } from "lamatic-ts";
 
 // Custom payload type
 interface TextGenerationPayload {
