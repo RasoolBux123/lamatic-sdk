@@ -86,6 +86,19 @@ async function main() {
 
 main();
 ```
+### Creating Access Token
+At your server, you can create an access token using the following code:
+
+```typescript
+import jwt from 'jsonwebtoken';
+
+const secret = 'sk-lamatic'; // Secret key generated from the lamatic studio
+const access_token = jwt.sign({ project_id: '123' }, secret, {
+  algorithm: 'HS256',
+  expiresIn: '1h', // User can change this to 1s to test the token, or to any other time
+});
+console.log('access_token: ', access_token);
+```
 
 ### Using Access Token
 
