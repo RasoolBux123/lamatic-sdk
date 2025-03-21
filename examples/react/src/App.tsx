@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lamatic } from 'lamatic-ts';
+import { Lamatic } from 'lamatic';
 import Logo from './assets/logo.png';
 import {jwtDecode} from 'jwt-decode';
 import { Credentials, KeyValuePair } from './types'
