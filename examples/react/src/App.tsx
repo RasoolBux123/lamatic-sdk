@@ -268,6 +268,8 @@ const App: React.FC = () => {
                 <div className="mt-2">
                   <p className="text-sm leading-5 text-yellow-700 mb-2">
                     Your access token has expired. Please generate a new token from your backend and enter it below.
+                    <br/>
+                    You can see the file <code>generateToken.ts</code> in the <code>api</code> folder for an example on how to generate a token.
                   </p>
                   <div className="flex gap-2">
                     <input

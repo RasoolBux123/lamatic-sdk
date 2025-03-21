@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "jose": "^6.0.10",
     "jwt-decode": "^4.0.0",
     "lamatic-ts": "^0.0.1",
     "react": "^19.0.0",
