@@ -1,5 +1,5 @@
 // This example shows how to use the Lamatic SDK with a token that expires, and how to update the access token.
-import { Lamatic } from "lamatic-ts";
+import { Lamatic } from "lamatic";
 
 const lamatic = new Lamatic({
   accessToken: "your-access-token",
