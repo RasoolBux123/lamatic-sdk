@@ -86,6 +86,7 @@ class Lamatic {
           statusCode: response.status
         }
       }
+      
       return {
         ...responseData.data.executeWorkflow,
         statusCode: response.status
@@ -146,7 +147,7 @@ class Lamatic {
         }
       }
       return {
-        ...responseData.data.executeWorkflow,
+        ...responseData.data.executeAgent,
         statusCode: response.status
       };
 
