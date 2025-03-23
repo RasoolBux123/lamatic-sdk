@@ -42,7 +42,7 @@ async function agent() {
   const payload = {
     query: "generate a tweet for learning lamatic AI"
   }
-  const response = await lamatic.executeAgent(flowId, payload);
+  const response = await lamatic.executeAgent(agentId, payload);
   console.log(response);
   if (response.statusCode === 403) {
 
@@ -52,7 +52,7 @@ async function agent() {
     lamatic.updateAccessToken(accessToken);
 
     // Execute the agent again
-    const response = await lamatic.executeAgent(flowId, payload);
+    const response = await lamatic.executeAgent(agentId, payload);
     console.log(response);
   }
 }
