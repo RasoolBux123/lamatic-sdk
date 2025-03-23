@@ -150,7 +150,6 @@ main();
 ```
 
 ### Handling Expired Access Tokens
-
 This example shows how to handle an expired access token by fetching a new one and updating the SDK:
 
 ```typescript
