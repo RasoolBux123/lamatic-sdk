@@ -13,6 +13,7 @@ export type LamaticStatus = "success" | "error";
 
 export interface LamaticAPIResponse {
     data: {
+        executeAgent: LamaticResponse | PromiseLike<LamaticResponse>;
         executeWorkflow: LamaticResponse;
     }
     errors?: Error[];

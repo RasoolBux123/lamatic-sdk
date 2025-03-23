@@ -86,6 +86,7 @@ class Lamatic {
           statusCode: response.status
         }
       }
+      
       return {
         ...responseData.data.executeWorkflow,
         statusCode: response.status
@@ -96,6 +97,66 @@ class Lamatic {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Execute a workflow with the given flow ID and payload
+   * @param {string} agentId - The ID of the agent to execute
+   * @param {Object} payload - The payload to pass to the workflow
+   * @returns {Promise<LamaticResponse>} The response from the workflow
+   */
+  async executeAgent(agentId : string, payload : Object): Promise<LamaticResponse> {
+    try {
+
+      const graphqlQuery = {
+        query: `query ExecuteAgent(
+                $agentId: String!  
+                $payload: JSON!
+              ) 
+              {   
+                executeAgent( 
+                  agentId: $agentId   
+                  payload: $payload
+                ) 
+                {  
+                  status       
+                  result   
+                } 
+              }`,
+        variables: {
+          agentId: agentId,
+          payload : payload,
+        },
+      };
+
+      const headers = this.getHeaders();
+      const options = {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(graphqlQuery),
+      };
+      
+      const response = await fetch(this.endpoint, options);
+      const responseText = await response.text();
+      let responseData : LamaticAPIResponse = JSON.parse(responseText);
+      if (responseData.errors) {
+        return {
+          status: "error",
+          result: null,
+          message: responseData.errors[0].message,
+          statusCode: response.status
+        }
+      }
+      return {
+        ...responseData.data.executeAgent,
+        statusCode: response.status
+      };
+
+    } catch (error : Error | any) {
+      console.error("[Lamatic SDK Error] : ", error.message);
+      throw new Error(error.message);
+    }
+  }
+
 
   /**
    * Get the headers for the API request
