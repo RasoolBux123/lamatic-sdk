@@ -328,7 +328,7 @@ const imageAnalysisPayload = {
 
 ### Handling Responses
 
-Different workflows/agents may return different result structures. Here's how you might handle responses from different types of workflows:
+Different workflows/agents may return different result structures. Here's how you might handle responses from different types of workflows/agents:
 
 ```typescript
 // Text generation workflow response
