@@ -15,7 +15,7 @@ async function getAccessToken() {
   return data.accessToken;
 }
 
-async function main() {
+async function flow() {
   const flowId = "your-flow-id";
   // sample payload
   const payload = {
@@ -36,4 +36,26 @@ async function main() {
   }
 }
 
-main();
+async function agent() {
+  const agentId = "your-agent-id";
+  // sample payload
+  const payload = {
+    query: "generate a tweet for learning lamatic AI"
+  }
+  const response = await lamatic.executeFlow(flowId, payload);
+  console.log(response);
+  if (response.statusCode === 403) {
+
+    // Get the new access token
+    const accessToken = await getAccessToken();
+    // Update the access token for the Lamatic SDK
+    lamatic.updateAccessToken(accessToken);
+
+    // Execute the flow again
+    const response = await lamatic.executeFlow(flowId, payload);
+    console.log(response);
+  }
+}
+
+flow();
+agent();
