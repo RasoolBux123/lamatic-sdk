@@ -262,7 +262,7 @@ async function runAgent() {
       console.log("Result:", response.result);
       return response.result;
     } else {
-      console.error("Agrnt execution failed:", response.message);
+      console.error("Agent execution failed:", response.message);
       return null;
     }
   } catch (error) {
