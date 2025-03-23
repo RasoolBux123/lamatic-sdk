@@ -51,7 +51,7 @@ async function agent() {
     // Update the access token for the Lamatic SDK
     lamatic.updateAccessToken(accessToken);
 
-    // Execute the flow again
+    // Execute the agent again
     const response = await lamatic.executeAgent(flowId, payload);
     console.log(response);
   }
