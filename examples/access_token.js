@@ -7,7 +7,7 @@ const lamatic = new Lamatic({
   endpoint: "your-endpoint",
 });
 
-async function main() {
+async function flow() {
   const flowId = "your-flow-id";
   // sample payload
   const payload = {
@@ -17,4 +17,19 @@ async function main() {
     console.log(response);
 }
 
-main();
+async function agent() {
+  const agentId = "your-agent-id";
+  // sample payload
+  const payload = {
+    query: "generating a tweet for learning lamatic AI"
+  }
+  try {
+    const response = await lamatic.executeAgent(agentId, payload);
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+flow();
+agent();
