@@ -12,6 +12,7 @@ const App: React.FC = () => {
     projectId: '',
     endpoint: '',
     flowId: '',
+    agentId: ''
   });
 
   const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>([
@@ -23,12 +24,23 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [lamaticInstance, setLamaticInstance] = useState<Lamatic | null>(null);
+  const [executionType, setExecutionType] = useState<'flow' | 'agent' | ''>('');
   const [showTokenInput, setShowTokenInput] = useState<boolean>(false);
   const [newToken, setNewToken] = useState<string>('');
 
   const handleCredentialChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setCredentials((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleExecutionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newType = e.target.value as 'flow' | 'agent';
+    setExecutionType(newType);
+    setCredentials((prev) => ({
+      ...prev,
+      flowId: newType === 'flow' ? prev.flowId : '',
+      agentId: newType === 'agent' ? prev.agentId : ''
+    }));
   };
 
   const handleKeyValueChange = (id: string, field: 'key' | 'value', value: string) => {
@@ -120,11 +132,15 @@ const App: React.FC = () => {
       return;
     }
 
-    if (!credentials.flowId) {
-      setError('Flow ID is required');
+    if (!credentials.flowId && !credentials.agentId) {
+      setError('Please enter either a Flow ID or an Agent ID');
       return;
     }
-
+    if (credentials.flowId && credentials.agentId) {
+      setError('Please enter only one: Flow ID or Agent ID');
+      return;
+    }
+    
     setIsLoading(true);
     setError(null);
     setResponse(null);
@@ -132,9 +148,15 @@ const App: React.FC = () => {
 
     try {
       const payload = buildPayload();
-      const result = await lamaticInstance.executeFlow(credentials.flowId, payload);
+      let result;
+      if (credentials.flowId) {
+        result = await lamaticInstance.executeFlow(credentials.flowId, payload);
+      } else if (credentials.agentId) {
+        result = await lamaticInstance.executeAgent(credentials.agentId, payload);
+      }
+
       setResponse(result);
-      setResponseStatus(result.statusCode!);
+      setResponseStatus(result!.statusCode!);
     } catch (err) {
       if (err instanceof Error && err.message.includes('403')) {
         setError('Access token expired. Please update your token.');
@@ -379,20 +401,48 @@ const App: React.FC = () => {
                 disabled={isConfigured}
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Flow ID
-              </label>
-              <input
-                type="text"
-                name="flowId"
-                value={credentials.flowId}
-                onChange={handleCredentialChange}
-                placeholder="your-flow-id"
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
-              />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Execution Type</label>
+                <select
+                  value={executionType}
+                  onChange={handleExecutionTypeChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                >
+                  <option value="">Select Type</option>
+                  <option value="flow">Flow</option>
+                  <option value="agent">Agent</option>
+                </select>
+              </div>
             </div>
+            {executionType === 'flow' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Flow ID</label>
+                <input
+                  type="text"
+                  name="flowId"
+                  value={credentials.flowId}
+                  onChange={handleCredentialChange}
+                  placeholder="your-flow-id"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                />
+              </div>
+            )}
+            {executionType === 'agent' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Agent ID</label>
+                <input
+                  type="text"
+                  name="agentId"
+                  value={credentials.agentId}
+                  onChange={handleCredentialChange}
+                  placeholder="your-agent-id"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
+                />
+              </div>
+            )}
+            
           </div>
           
           <div className="flex gap-2">
@@ -481,7 +531,7 @@ const App: React.FC = () => {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                       </svg>
-                      Execute Flow
+                      Execute
                     </>
                   )}
                 </button>
