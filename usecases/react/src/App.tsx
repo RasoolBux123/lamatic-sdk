@@ -156,7 +156,8 @@ const App: React.FC = () => {
       }
 
       setResponse(result);
-      setResponseStatus(result!.statusCode!);
+      setResponseStatus(result?.statusCode || null);
+
     } catch (err) {
       if (err instanceof Error && err.message.includes('403')) {
         setError('Access token expired. Please update your token.');
