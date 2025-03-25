@@ -1,12 +1,12 @@
 # Lamatic SDK React Starter
 
-This repository provides a **React-based starter project** for integrating with the **Lamatic SDK**. It allows developers to authenticate, configure, and execute flows using Lamatic's AI-powered workflow automation.
+This repository provides a **React-based starter project** for integrating with the **Lamatic SDK**. It allows developers to authenticate, configure, and execute flows/agents using Lamatic's AI-powered automation.
 
 ## 🚀 Features
 - Authenticate using API Key or Access Token
 - Validate and manage authentication tokens
 - Configure Lamatic SDK with user inputs
-- Execute AI-powered flows
+- Execute AI-powered flows and/or agents
 - Handle response statuses and errors gracefully
 
 ---
@@ -60,14 +60,15 @@ Before executing a flow, ensure the following configurations are set:
 
 - **Project ID** (Required)
 - **Endpoint** (Required)
-- **Flow ID** (Required)
+- **Flow ID** (Optional)
+- **Agent ID** (Optional)
 - **Authentication** (Access Token or API Key)
 
 Once configured, click **"Configure Client"** to initialize the Lamatic SDK instance.
 
 ---
 
-## 📡 Executing a Flow
+## 📡 Executing a Flow/Agent
 
 1. Input key-value pairs for your request.
 2. Click **"Submit"** to execute the selected flow.
@@ -82,6 +83,7 @@ You can set environment variables in a `.env` file:
 VITE_LAMATIC_PROJECT_ID=your_project_id
 VITE_LAMATIC_ENDPOINT=https://api.lamatic.ai
 VITE_LAMATIC_FLOW_ID=your_flow_id
+VITE_LAMATIC_AGENT_ID=your_agent_id
 ```
 
 ---
