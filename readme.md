@@ -1,6 +1,6 @@
 # Lamatic SDK
 
-The Lamatic SDK provides a simple way to interact with the Lamatic AI platform, allowing you to execute workflows and integrate AI capabilities into your applications.
+The [Lamatic SDK](https://www.npmjs.com/package/lamatic) provides a simple way to interact with the Lamatic AI platform, allowing you to execute workflows and integrate AI capabilities into your applications.
 
 ## Installation
 
