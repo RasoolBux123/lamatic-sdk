@@ -1,9 +1,18 @@
 ![sdk lamatic](https://github.com/user-attachments/assets/88fb494e-2f95-4c71-8e85-f1602559d9d0)
 
-# Lamatic SDK
+<h1 >Lamatic SDK</h1>
 
-The [Lamatic SDK](https://www.npmjs.com/package/lamatic) provides a simple way to interact with the Lamatic AI platform, allowing you to execute workflows and integrate AI capabilities into your applications.
+<h3>
+  <a href="https://lamatic.ai/docs/sdk">About</a>
+  <span> · </span>
+  <a href="https://lamatic.ai/docs/sdk">Documentation</a>
+  <span> · </span>
+  <a href="https://lamatic.ai/docs/sdk/react">Samples</a>
+</h3>
 
+<p >
+  <a href="https://www.npmjs.com/package/lamatic">Lamatic SDK</a> provides a simple way to interact with the Lamatic AI platform, allowing you to execute workflows and integrate AI capabilities into your applications.
+<p/>
 ## Installation
 
 Install the Lamatic SDK using npm:
