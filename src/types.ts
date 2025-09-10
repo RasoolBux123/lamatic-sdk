@@ -15,6 +15,7 @@ export interface LamaticAPIResponse {
     data: {
         executeAgent: LamaticResponse | PromiseLike<LamaticResponse>;
         executeWorkflow: LamaticResponse;
+        checkStatus: LamaticResponse;
     }
     errors?: Error[];
 }
