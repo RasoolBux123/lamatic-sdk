@@ -27,7 +27,6 @@ function Page() {
     <div>
       <button onClick={executeFlow}>Execute Flow</button>
       <button onClick={executeAgent}>Execute Agent</button>
-      <button onClick={checkStatus}>Check Status</button>
     </div>
   )
 }
