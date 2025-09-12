@@ -14,6 +14,15 @@ function Page() {
     })
     console.log(response)
   }
+
+  const checkStatus = async () => {
+    //In case of async flow executeFlow will return a request id, you can use checkStatus to check it's status.
+    // 15 is the polling interval in seconds
+    // 900 is the timeout duration in seconds (15 minutes)
+    const response = await lamaticClient.checkStatus("your-request-id", 15, 900)
+    console.log(response)
+  }
+
   return (
     <div>
       <button onClick={executeFlow}>Execute Flow</button>

@@ -157,6 +157,92 @@ class Lamatic {
     }
   }
 
+  /**
+   * Check the status of a request with polling capability
+   * @param {string} requestId - The request ID to check status for
+   * @param {number} [pollInterval=15] - Polling interval in seconds (default: 15)
+   * @param {number} [pollTimeout=900] - Polling timeout in seconds (default: 900)
+   * @returns {Promise<LamaticResponse>} The response from the status check
+   */
+  async checkStatus(
+    requestId: string,
+    pollInterval: number = 15,
+    pollTimeout: number = 900
+  ): Promise<LamaticResponse> {
+    const startTime = Date.now();
+    const timeoutMs = pollTimeout * 1000;
+    const intervalMs = pollInterval * 1000;
+
+    while (Date.now() - startTime < timeoutMs) {
+      try {
+        const graphqlQuery = {
+          query: `query CheckStatus(
+                  $requestId: String!
+                ) {
+                  checkStatus(
+                    requestId: $requestId
+                  )
+                }`,
+          variables: {
+            requestId: requestId,
+          },
+        };
+
+        const headers = this.getHeaders();
+        const options = {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(graphqlQuery),
+        };
+        
+        const response = await fetch(this.endpoint, options);
+        const responseText = await response.text();
+        let responseData: LamaticAPIResponse = JSON.parse(responseText);
+        
+        if (responseData.errors) {
+          return {
+            status: "error",
+            result: null,
+            message: responseData.errors[0].message,
+            statusCode: response.status
+          };
+        }
+        
+        const statusResult = {
+          ...responseData.data.checkStatus,
+          statusCode: response.status
+        };
+
+        // If the status indicates completion (success or error), return immediately
+        if (statusResult.status === "success" || statusResult.status === "error" || statusResult.status === "failed") {
+          return statusResult;
+        }
+
+        // If still in progress, wait for the next poll interval
+        if (Date.now() - startTime + intervalMs < timeoutMs) {
+          await new Promise(resolve => setTimeout(resolve, intervalMs));
+        }
+
+      } catch (error: Error | any) {
+        console.error("[Lamatic SDK Error] : ", error.message);
+        return {
+          status: "error",
+          result: null,
+          message: error.message,
+          statusCode: 500
+        };
+      }
+    }
+
+    // Timeout reached
+    return {
+      status: "error",
+      result: null,
+      message: `Request checkStatus timedout after ${pollTimeout} seconds, your request may still be executing in the background and you can check after few minutes`,
+      statusCode: 408
+    };
+  }
+
 
   /**
    * Get the headers for the API request
